@@ -286,7 +286,7 @@ export default function Header() {
 
             {/* Book appointment button */}
             <button
-              onClick={() => setIsModalOpen(true)}
+              onClick={() => router.push('/appointment')}
               className={`bg-[#006837] hover:bg-[#005129] text-white font-bold rounded-md transition-all duration-300 ${
                 scrolled ? "py-1.5 px-3 text-sm" : "py-2 px-4 text-base"
               }`}
@@ -494,7 +494,7 @@ export default function Header() {
           </div>
 
           <button
-            onClick={() => scrollToSection('appointments')}
+            onClick={() => router.push('/appointment')}
             className="block w-full px-3 py-2 bg-[#006837] hover:bg-[#005129] text-white font-bold rounded-md transition-colors duration-200"
           >
             Book Here
