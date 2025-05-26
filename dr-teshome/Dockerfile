@@ -24,6 +24,9 @@ WORKDIR /app
 COPY --from=builder /app/main .
 COPY --from=builder /app/.env .
 
+# Set environment variable
+ENV PORT=8080
+
 # Expose port
 EXPOSE 8080
 
