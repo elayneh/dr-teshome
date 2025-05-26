@@ -7,8 +7,10 @@ import (
 	"dr-teshome/internal/repository"
 	"dr-teshome/internal/services"
 	"dr-teshome/pkg/database"
+	"fmt"
 	"log"
 	"net/http"
+	"os"
 )
 
 func corsMiddleware(next http.Handler) http.Handler {
@@ -58,15 +60,16 @@ func main() {
 	mux.HandleFunc("/api/auth/register", userHandler.Register)
 	mux.HandleFunc("/api/auth/login", userHandler.Login)
 
-	// Apply CORS middleware
-	handler := corsMiddleware(mux)
+	// Health check endpoint
+	mux.HandleFunc("/api/health", handlers.HealthCheck)
 
-	// Start server
-	log.Printf("Server starting on port %s", cfg.ServerPort)
-	if cfg.ServerPort == "" {
-		cfg.ServerPort = "8080"
+	// Start the server
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
 	}
-	if err := http.ListenAndServe(":"+cfg.ServerPort, handler); err != nil {
+	fmt.Printf("Server starting on port %s...\n", port)
+	if err := http.ListenAndServe(":"+port, corsMiddleware(mux)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
 }
