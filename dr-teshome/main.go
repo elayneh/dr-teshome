@@ -63,6 +63,9 @@ func main() {
 
 	// Start server
 	log.Printf("Server starting on port %s", cfg.ServerPort)
+	if cfg.ServerPort == "" {
+		cfg.ServerPort = "8080"
+	}
 	if err := http.ListenAndServe(":"+cfg.ServerPort, handler); err != nil {
 		log.Fatalf("Failed to start server: %v", err)
 	}
