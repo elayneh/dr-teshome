@@ -13,6 +13,9 @@ export default function RegisterPage() {
     email: "",
     password: "",
     confirmPassword: "",
+    phoneNumber: "",
+    dateOfBirth: "",
+    address: "",
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [isLoading, setIsLoading] = useState(false)
@@ -79,6 +82,17 @@ export default function RegisterPage() {
       newErrors.confirmPassword = "Passwords do not match"
     }
 
+    // Validate date of birth
+    if (!formData.dateOfBirth) {
+      newErrors.dateOfBirth = "Date of birth is required"
+    } else {
+      const birthDate = new Date(formData.dateOfBirth)
+      const today = new Date()
+      if (birthDate > today) {
+        newErrors.dateOfBirth = "Date of birth cannot be in the future"
+      }
+    }
+
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
   }
@@ -91,30 +105,65 @@ export default function RegisterPage() {
       return
     }
 
+    // Check if date of birth is in the future
+    const birthDate = new Date(formData.dateOfBirth)
+    const today = new Date()
+    if (birthDate > today) {
+      setSubmitError("Date of birth cannot be in the future")
+      return
+    }
+
+    // Check if all required fields are filled
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.password || !formData.phoneNumber || !formData.dateOfBirth || !formData.address) {
+      setSubmitError("All fields are required")
+      return
+    }
+
     setIsLoading(true)
     setActiveProvider(null)
 
     try {
-      // For demo purposes, we'll just simulate a successful registration
-      // In a real app, you would send this data to your API
+      const requestBody = JSON.stringify({
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        email: formData.email,
+        password: formData.password,
+        phoneNumber: formData.phoneNumber,
+        dateOfBirth: new Date(formData.dateOfBirth).toISOString(),
+        address: formData.address,
+        // Add more fields if needed
+      })
+      console.log("Request body:", requestBody)
 
-      // Check if email is already registered (for demo purposes)
-      if (formData.email === "patient@example.com") {
-        setSubmitError("This email is already registered")
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: requestBody,
+      })
+
+      console.log("Response status:", response.status)
+
+      if (!response.ok) {
+        const contentType = response.headers.get("content-type")
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json()
+          setSubmitError(errorData.error || "Registration failed")
+        } else {
+          const errorText = await response.text()
+          console.log("Non-JSON error response:", errorText)
+          setSubmitError("Registration failed with an unexpected error")
+        }
         setIsLoading(false)
         return
       }
 
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-
-      // Store user data in localStorage (for demo purposes)
-      localStorage.setItem("isLoggedIn", "true")
-      localStorage.setItem("userName", `${formData.firstName} ${formData.lastName}`)
-
-      // Redirect to home page
-      router.push("/")
+      setIsLoading(false)
+      alert("Registration successful! Please log in.")
+      router.push("/login")
     } catch (error) {
+      console.error("Registration error:", error)
       setSubmitError("An error occurred during registration. Please try again.")
       setIsLoading(false)
     }
@@ -247,6 +296,96 @@ export default function RegisterPage() {
                   />
                 </div>
                 {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="phoneNumber" className="block text-sm font-medium text-gray-700">
+                Phone Number
+              </label>
+              <div className="mt-1">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    type="tel"
+                    autoComplete="tel"
+                    required
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    placeholder="+1 (555) 123-4567"
+                    className={`appearance-none block w-full pl-10 px-3 py-2 border ${
+                      errors.phoneNumber ? "border-red-300" : "border-gray-300"
+                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#006837] focus:border-[#006837] sm:text-sm text-gray-900`}
+                    disabled={isLoading}
+                  />
+                </div>
+                {errors.phoneNumber && <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>}
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="address" className="block text-sm font-medium text-gray-700">
+                Address
+              </label>
+              <div className="mt-1">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="address"
+                    name="address"
+                    type="text"
+                    autoComplete="street-address"
+                    required
+                    value={formData.address}
+                    onChange={handleChange}
+                    placeholder="123 Main St"
+                    className={`appearance-none block w-full pl-10 px-3 py-2 border ${
+                      errors.address ? "border-red-300" : "border-gray-300"
+                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#006837] focus:border-[#006837] sm:text-sm text-gray-900`}
+                    disabled={isLoading}
+                  />
+                </div>
+                {errors.address && <p className="mt-1 text-sm text-red-600">{errors.address}</p>}
+              </div>
+            </div>
+
+            <div>
+              <label htmlFor="dateOfBirth" className="block text-sm font-medium text-gray-700">
+                Date of Birth
+              </label>
+              <div className="mt-1">
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <input
+                    id="dateOfBirth"
+                    name="dateOfBirth"
+                    type="date"
+                    autoComplete="bday"
+                    required
+                    value={formData.dateOfBirth}
+                    onChange={handleChange}
+                    className={`appearance-none block w-full pl-10 px-3 py-2 border ${
+                      errors.dateOfBirth ? "border-red-300" : "border-gray-300"
+                    } rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#006837] focus:border-[#006837] sm:text-sm text-gray-900`}
+                    disabled={isLoading}
+                  />
+                </div>
+                {errors.dateOfBirth && <p className="mt-1 text-sm text-red-600">{errors.dateOfBirth}</p>}
               </div>
             </div>
 

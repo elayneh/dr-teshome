@@ -26,17 +26,40 @@ export default function LoginPage() {
     setIsLoading(true)
     setError("")
 
-    // Simple demo authentication
-    if (email === "patient@example.com" && password === "password") {
-      localStorage.setItem("isLoggedIn", "true")
-      localStorage.setItem("userName", "John Smith")
+    try {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      })
 
-      // Simulate network delay
-      setTimeout(() => {
-        router.push("/")
-      }, 500)
-    } else {
-      setError("Invalid email or password")
+      if (!response.ok) {
+        const contentType = response.headers.get("content-type")
+        if (contentType && contentType.includes("application/json")) {
+          const errorData = await response.json()
+          setError(errorData.error || "Login failed")
+        } else {
+          const errorText = await response.text()
+          console.log("Non-JSON error response:", errorText)
+          setError("Login failed with an unexpected error")
+        }
+        setIsLoading(false)
+        return
+      }
+
+      const data = await response.json()
+      localStorage.setItem("isLoggedIn", "true")
+      localStorage.setItem("userName", data.userName || "User")
+
+      router.push("/")
+    } catch (error) {
+      console.error("Login error:", error)
+      setError("An error occurred during login. Please try again.")
       setIsLoading(false)
     }
   }
