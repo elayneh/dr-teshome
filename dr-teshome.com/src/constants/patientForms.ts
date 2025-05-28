@@ -1,0 +1,58 @@
+export const forms = [
+  {
+    title: "New Patient Registration Form",
+    description: "Complete patient information and medical history form for new patients",
+    required: true,
+    estimatedTime: "10-15 minutes",
+    downloadUrl: "#",
+  },
+  {
+    title: "Insurance Information Form",
+    description: "Insurance details and authorization for billing",
+    required: true,
+    estimatedTime: "5 minutes",
+    downloadUrl: "#",
+  },
+  {
+    title: "Medical History Questionnaire",
+    description: "Detailed medical history including medications, allergies, and past procedures",
+    required: true,
+    estimatedTime: "15-20 minutes",
+    downloadUrl: "#",
+  },
+  {
+    title: "HIPAA Privacy Notice & Consent",
+    description: "Privacy practices acknowledgment and consent for treatment",
+    required: true,
+    estimatedTime: "5 minutes",
+    downloadUrl: "#",
+  },
+  {
+    title: "Emergency Contact Information",
+    description: "Emergency contact details and medical power of attorney information",
+    required: true,
+    estimatedTime: "5 minutes",
+    downloadUrl: "#",
+  },
+  {
+    title: "Prescription Refill Request Form",
+    description: "Request form for prescription refills",
+    required: false,
+    estimatedTime: "3 minutes",
+    downloadUrl: "#",
+  },
+  {
+    title: "Medical Records Release Form",
+    description: "Authorization to release medical records to other healthcare providers",
+    required: false,
+    estimatedTime: "5 minutes",
+    downloadUrl: "#",
+  },
+  {
+    title: "Financial Hardship Application",
+    description: "Application for financial assistance and payment plan options",
+    required: false,
+    estimatedTime: "10 minutes",
+    downloadUrl: "#",
+  },
+]; 

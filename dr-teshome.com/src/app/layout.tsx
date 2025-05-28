@@ -15,8 +15,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "dr-teshome.com",
-  description: "dr-teshome.com",
+  title: "dr-teshome orthopedic surgion",
+  description: "dr-teshome tena who is one of recommended orthopedic surgeons in ethiopia",
 };
 
 export default function RootLayout({

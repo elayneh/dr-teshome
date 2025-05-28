@@ -3,6 +3,10 @@ import Image from "next/image"
 import { Calendar, Heart, Shield, Stethoscope, Mail, Phone } from "lucide-react"
 import { useState } from "react"
 import AppointmentModal from "../components/AppointmentModal"
+import { appointmentSlots } from "../constants/appointments"
+import { patientResources } from "../constants/patientResources"
+import Link from "next/link"
+import { blogposts } from "../constants/blogposts"
 
 export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -16,10 +20,9 @@ export default function LandingPage() {
   }
 
   return (
-    <main className="pt-16 bg-white">
-      {/* Hero Section */}
+    <main className="pt-6 bg-white">
       <section id="home" className="min-h-screen flex items-center justify-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
           <div className="text-center">
             <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold bg-clip-text text-gray-900 mb-8 leading-tight">
               Welcome to Dr. Teshome's Practice
@@ -38,8 +41,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* About Section */}
-      <section id="about" className="py-24">
+      <section id="about" className="pb-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-16 text-center">About Dr. Teshome</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -66,7 +68,7 @@ export default function LandingPage() {
             </div>
             <div className="relative">
               <div className="relative h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
-                <Image src="/placeholder.svg?height=500&width=400" alt="Dr. Teshome" fill className="object-cover" />
+                <Image src="/images/dr-tesh.jpeg" alt="Dr. Teshome" fill className="object-cover" />
               </div>
             </div>
           </div>
@@ -140,14 +142,7 @@ export default function LandingPage() {
           <div className="max-w-4xl mx-auto p-8">
             <h3 className="text-2xl font-semibold text-gray-800 mb-6">Available Appointment Times</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {/* Sample Appointment Slots - Replace with dynamic data */}
-              {[
-                { day: "Monday", time: "9:00 AM - 10:00 AM" },
-                { day: "Tuesday", time: "11:00 AM - 12:00 PM" },
-                { day: "Wednesday", time: "2:00 PM - 3:00 PM" },
-                { day: "Thursday", time: "9:00 AM - 10:00 AM" },
-                { day: "Friday", time: "11:00 AM - 12:00 PM" },
-              ].map((slot, index) => (
+              {appointmentSlots.map((slot, index) => (
                 <div key={index} className="border border-green-500 rounded-md p-4">
                   <h4 className="font-semibold text-gray-700">{slot.day}</h4>
                   <p className="text-gray-600 mb-3">{slot.time}</p>
@@ -189,38 +184,24 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Insurance Information",
-                description: "Learn about accepted insurance plans and payment options for your convenience",
-              },
-              {
-                title: "Patient Forms",
-                description: "Download and complete forms before your visit to save time during your appointment",
-              },
-              {
-                title: "FAQs",
-                description: "Find answers to common questions about our practice and healthcare services",
-              },
-              {
-                title: "Prescription Refills",
-                description: "Request prescription refills online and track your medication history easily",
-              },
-              {
-                title: "Lab Results",
-                description: "Access your lab results securely online as soon as they become available",
-              },
-              {
-                title: "Health Portal",
-                description: "Manage your health information and communicate with our medical team",
-              },
-            ].map((resource, index) => (
+            {patientResources.map((resource, index) => (
               <div
                 key={index}
-                className="p-8 rounded-2xl shadow-lg hover:shadow-xl hover:border-2 hover:border-green-500 transition-all duration-300 transform hover:-translate-y-1"
+                className="p-8 rounded-2xl shadow-lg hover:shadow-xl hover:border-2 hover:border-green-500 transition-all duration-300 transform hover:-translate-y-1 flex flex-col justify-between"
               >
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">{resource.title}</h3>
-                <p className="text-gray-600 leading-relaxed">{resource.description}</p>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-4">{resource.title}</h3>
+                  <p className="text-gray-600 leading-relaxed">{resource.description}</p>
+                </div>
+                <div className="mt-6">
+                  <Link
+                    href={resource.link}
+                    className="inline-block px-6 py-2 border border-transparent rounded-lg text-green-600 font-semibold transition-all duration-200 hover:border-green-500 hover:bg-transparent focus:outline-none"
+                    style={{ background: "none" }}
+                  >
+                    See More
+                  </Link>
+                </div>
               </div>
             ))}
           </div>
@@ -237,32 +218,7 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[
-              {
-                title: "Understanding Preventive Care",
-                excerpt: "Learn about the importance of regular check-ups and preventive measures for long-term health",
-              },
-              {
-                title: "Healthy Living Tips",
-                excerpt: "Expert advice on maintaining a healthy lifestyle with practical daily habits",
-              },
-              {
-                title: "Medical News Updates",
-                excerpt: "Stay informed about the latest developments in healthcare and medical technology",
-              },
-              {
-                title: "Mental Health Awareness",
-                excerpt: "Understanding the importance of mental health and when to seek professional help",
-              },
-              {
-                title: "Nutrition and Wellness",
-                excerpt: "Essential nutrition tips for maintaining optimal health and energy levels",
-              },
-              {
-                title: "Exercise and Physical Health",
-                excerpt: "Safe and effective exercise routines for different age groups and fitness levels",
-              },
-            ].map((post, index) => (
+            {blogposts.map((post, index) => (
               <div
                 key={index}
                 className="p-8 rounded-2xl shadow-lg hover:shadow-xl hover:border-2 hover:border-green-500 transition-all duration-300 transform hover:-translate-y-1"
@@ -311,7 +267,7 @@ export default function LandingPage() {
                     <p className="text-gray-600 leading-relaxed">
                       <strong className="text-gray-900">Address:</strong>
                       <br />
-                      123 Medical Center Drive
+                      Addis Ababa, Ethiopia
                       <br />
                       Suite 100
                       <br />
@@ -327,7 +283,7 @@ export default function LandingPage() {
                     <p className="text-gray-600">
                       <strong className="text-gray-900">Phone:</strong>
                       <br />
-                      (123) 456-7890
+                      +251911111111
                     </p>
                   </div>
                 </div>
@@ -339,20 +295,20 @@ export default function LandingPage() {
                     <p className="text-gray-600">
                       <strong className="text-gray-900">Email:</strong>
                       <br />
-                      contact@drteshome.com
+                      drteshome@gmail.com
                     </p>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="p-10 rounded-3xl shadow-xl hover:border-2 hover:border-green-500 transition-all duration-300">
+            <div className="p-10 rounded-3xl shadow-xl hover:border-1 hover:border-green-500 transition-all duration-300">
               <form className="space-y-6">
                 <div>
                   <input
                     type="text"
                     id="contact-name"
                     placeholder="Your Name"
-                    className="w-full px-4 py-4 rounded-xl border-2 border-green-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 transition-all duration-300 text-lg placeholder-gray-500"
+                    className="w-full px-4 py-4 text-gray-900 rounded-xl border-2 border-green-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 focus:outline-none transition-all duration-300 text-lg placeholder-gray-500"
                   />
                 </div>
                 <div>
@@ -360,7 +316,7 @@ export default function LandingPage() {
                     type="email"
                     id="contact-email"
                     placeholder="Your Email"
-                    className="w-full px-4 py-4 rounded-xl border-2 border-green-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 transition-all duration-300 text-lg placeholder-gray-500"
+                    className="w-full px-4 py-4 text-gray-900 rounded-xl border-2 border-green-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 focus:outline-none transition-all duration-300 text-lg placeholder-gray-500"
                   />
                 </div>
                 <div>
@@ -368,12 +324,12 @@ export default function LandingPage() {
                     id="message"
                     rows={4}
                     placeholder="Your Message"
-                    className="w-full px-4 py-4 rounded-xl border-2 border-green-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 transition-all duration-300 text-lg placeholder-gray-500 resize-none"
+                    className="w-full px-4 py-4 text-gray-900 rounded-xl border-2 border-green-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 focus:outline-none transition-all duration-300 text-lg placeholder-gray-500 resize-none"
                   ></textarea>
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-green-600 text-white px-6 py-4 rounded-xl hover:bg-green-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl text-lg font-semibold"
+                  className="w-full bg-green-600 text-gray-900 px-6 py-4 rounded-xl hover:bg-green-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl text-lg font-semibold"
                 >
                   Send Message
                 </button>

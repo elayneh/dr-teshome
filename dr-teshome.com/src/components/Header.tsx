@@ -198,41 +198,31 @@ export default function Header() {
                 `}
               >
                 <div className="py-1" role="menu" aria-orientation="vertical">
-                  <button
-                    onClick={() => scrollToSection('patient-resources')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#006837]"
+                  <Link href="/patient-form" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#006837]"
                     role="menuitem"
                   >
                     Patient Forms
-                  </button>
-                  <button
-                    onClick={() => scrollToSection('patient-resources')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#006837]"
+                  </Link>
+                  <Link href="/insurance" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#006837]"
                     role="menuitem"
                   >
                     Insurance Information
-                  </button>
-                  <button
-                    onClick={() => scrollToSection('patient-resources')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#006837]"
+                  </Link>
+                  <Link href="/faqs" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#006837]"
                     role="menuitem"
                   >
                     Frequently Asked Questions
-                  </button>
-                  <button
-                    onClick={() => scrollToSection('patient-resources')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#006837]"
+                  </Link>
+                  <Link href="/patient-education" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#006837]"
                     role="menuitem"
                   >
                     Patient Education
-                  </button>
-                  <button
-                    onClick={() => scrollToSection('patient-resources')}
-                    className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#006837]"
+                  </Link>
+                  <Link href="/telehealth" className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#006837]"
                     role="menuitem"
                   >
                     Telehealth Services
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
