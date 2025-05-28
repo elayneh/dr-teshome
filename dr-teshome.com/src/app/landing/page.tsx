@@ -10,7 +10,7 @@ export default function LandingPage() {
       element.scrollIntoView({ behavior: 'smooth' });
     }
   };
-
+  
   return (
     <main className="pt-16">
       {/* Hero Section */}
@@ -84,11 +84,11 @@ export default function LandingPage() {
               <div key={index} className="bg-white p-6 rounded-lg shadow-md">
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">{service.title}</h3>
                 <p className="text-gray-600">{service.description}</p>
-              </div>
+                  </div>
             ))}
-          </div>
         </div>
-      </section>
+      </div>
+    </section>
 
       {/* Appointments Section */}
       <section id="appointments" className="py-20 bg-white">

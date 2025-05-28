@@ -1,169 +1,226 @@
 "use client"
+import Image from "next/image"
+import { Calendar, Heart, Shield, Stethoscope, Mail, Phone } from "lucide-react"
+import { useState } from "react"
+import AppointmentModal from "../components/AppointmentModal"
 
-import React, { useState } from 'react';
-import Image from 'next/image';
-import AppointmentModal from '../components/AppointmentModal';
-import { useRouter } from 'next/navigation';
-
-export default function Home() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const router = useRouter();
+export default function LandingPage() {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedSlot, setSelectedSlot] = useState<{ day: string; time: string } | null>(null)
 
   const scrollToSection = (sectionId: string) => {
-    const element = document.getElementById(sectionId);
+    const element = document.getElementById(sectionId)
     if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+      element.scrollIntoView({ behavior: "smooth" })
     }
-  };
+  }
 
   return (
     <main className="pt-16 bg-white">
       {/* Hero Section */}
-      <section id="home" className="min-h-[60vh] flex items-center justify-center">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <section id="home" className="min-h-screen flex items-center justify-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
           <div className="text-center">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Dr. Teshome Tena
+            <h1 className="text-5xl sm:text-6xl md:text-7xl font-bold bg-clip-text text-gray-900 mb-8 leading-tight">
+              Welcome to Dr. Teshome's Practice
             </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Orthopedic Surgeon, Trauma and Arthroplasty Subspecialist
+            <p className="text-xl sm:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+              Providing exceptional healthcare services with compassion, expertise, and cutting-edge medical care
             </p>
             <button
-              onClick={() => router.push('/appointment')}
-              className="bg-[#006837] text-white px-8 py-3 rounded-full hover:bg-[#005129] transition-colors"
+              onClick={() => scrollToSection("appointments")}
+              className="group bg-green-600 text-white px-10 py-4 rounded-full hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-lg font-semibold"
             >
               Book an Appointment
+              <Calendar className="inline-block ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
         </div>
       </section>
 
       {/* About Section */}
-      <section id="about" className="py-10">
+      <section id="about" className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">About Dr. Teshome Tena</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <div>
-              <p className="text-gray-600 mb-4">
-                Dr. Teshome Tena is an orthopedic surgeon specializing in trauma and arthroplasty in Addis Ababa. 
-                With over ten years of experience in diagnosing and treating joint, bone, and muscle disorders, 
-                he is a former Assistant Professor of orthopedic surgery at Arba Minch University and currently 
-                serves as a consultant surgeon at Bethezata Hospital.
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-16 text-center">About Dr. Teshome</h2>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            <div className="space-y-6">
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Dr. Teshome is a highly experienced medical professional dedicated to providing the highest quality of
+                care to all patients. With years of experience and a commitment to staying current with the latest
+                medical advancements, Dr. Teshome ensures that each patient receives personalized, comprehensive care.
               </p>
-              <p className="text-gray-600 mb-4">
-                Dr. Tena is actively involved in research-based activities and has authored studies demonstrating 
-                his expertise in managing complex fractures. His dedication to patient care is evident through his 
-                work with EMERGENCY ONG Onlus, providing free healthcare services to victims of war and poverty.
+              <p className="text-lg text-gray-600 leading-relaxed">
+                Our practice is built on the foundation of trust, compassion, and excellence in healthcare delivery. We
+                believe in treating not just the condition, but the whole person.
               </p>
-              <div className="mt-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Education</h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-2">
-                  <li>M.D from the University of Gondar (2007-2013)</li>
-                  <li>Orthopedic surgery residency training from Addis Ababa University (2015-2019)</li>
-                  <li>Fellowship in orthopedic trauma from Addis Ababa University (2021-2023)</li>
-                </ul>
-              </div>
-              <div className="mt-6">
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">Professional Memberships</h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-2">
-                  <li>Ethiopian Medical Association</li>
-                  <li>Ethiopian Society of Orthopaedic and Traumatology (ESOT)</li>
-                </ul>
+              <div className="flex items-center space-x-4 pt-4">
+                <div className="flex items-center space-x-2">
+                  <Heart className="w-6 h-6 text-green-600" />
+                  <span className="text-gray-700 font-medium">Compassionate Care</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Shield className="w-6 h-6 text-green-600" />
+                  <span className="text-gray-700 font-medium">Trusted Expertise</span>
+                </div>
               </div>
             </div>
-            <div className="relative h-96">
-              <Image
-                src="/images/dr-tesh.jpeg"
-                alt="Dr. Teshome Tena"
-                fill
-                className="object-cover rounded-lg"
-                priority
-              />
+            <div className="relative">
+              <div className="relative h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
+                <Image src="/placeholder.svg?height=500&width=400" alt="Dr. Teshome" fill className="object-cover" />
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Services Section */}
-      <section id="services" className="py-10">
+      <section id="services" className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Our Services</h2>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">Our Services</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Comprehensive healthcare solutions tailored to your unique needs
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {[
               {
-                title: "Orthopedic Surgery",
-                description: "Comprehensive surgical treatments for bone and joint conditions"
+                title: "Primary Care",
+                description:
+                  "Comprehensive healthcare services for patients of all ages with personalized treatment plans",
+                icon: Stethoscope,
+                gradient: "from-green-500 to-emerald-600",
               },
               {
-                title: "Trauma Care",
-                description: "Expert treatment for fractures and complex injuries"
+                title: "Specialized Care",
+                description: "Expert treatment for specific medical conditions with state-of-the-art technology",
+                icon: Heart,
+                gradient: "from-emerald-500 to-teal-600",
               },
               {
-                title: "Joint Replacement",
-                description: "Advanced arthroplasty procedures for improved mobility"
-              }
-            ].map((service, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">{service.title}</h3>
-                <p className="text-gray-600">{service.description}</p>
-              </div>
-            ))}
+                title: "Preventive Care",
+                description: "Regular check-ups and health screenings to maintain optimal wellness",
+                icon: Shield,
+                gradient: "from-teal-500 to-green-600",
+              },
+            ].map((service, index) => {
+              const IconComponent = service.icon
+              return (
+                <div
+                  key={index}
+                  className="group relative p-8 rounded-2xl shadow-lg hover:border-2 hover:border-green-500 transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl"
+                >
+                  <div className="relative z-10">
+                    <div
+                      className={`w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}
+                    >
+                      <IconComponent className="w-8 h-8 text-green-600" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-green-700 transition-colors">
+                      {service.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed">{service.description}</p>
+                  </div>
+                </div>
+              )
+            })}
           </div>
         </div>
       </section>
 
       {/* Appointments Section */}
-      <section id="appointments" className="py-10">
+      <section id="appointments" className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Book an Appointment</h2>
-          <div className="text-center">
-            <p className="text-gray-600 mb-8">
-              To schedule an appointment, please contact us directly through one of the following methods:
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">Book an Appointment</h2>
+            <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+              Schedule your visit with Dr. Teshome and take the first step towards better health
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Location</h3>
-                <p className="text-gray-600">Bethezata Hospital</p>
-                <p className="text-gray-600">Addis Ababa, Ethiopia</p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Hours</h3>
-                <p className="text-gray-600">Monday: 9:00 AM - 5:00 PM</p>
-                <p className="text-gray-600">Wednesday: 9:00 AM - 5:00 PM</p>
-                <p className="text-gray-600">Friday: 9:00 AM - 5:00 PM</p>
-              </div>
-              <div className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">Contact</h3>
-                <p className="text-gray-600">WhatsApp Available</p>
-                <p className="text-gray-600">Typically replies within 1 minute</p>
-              </div>
+          </div>
+          <div className="max-w-4xl mx-auto p-8">
+            <h3 className="text-2xl font-semibold text-gray-800 mb-6">Available Appointment Times</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* Sample Appointment Slots - Replace with dynamic data */}
+              {[
+                { day: "Monday", time: "9:00 AM - 10:00 AM" },
+                { day: "Tuesday", time: "11:00 AM - 12:00 PM" },
+                { day: "Wednesday", time: "2:00 PM - 3:00 PM" },
+                { day: "Thursday", time: "9:00 AM - 10:00 AM" },
+                { day: "Friday", time: "11:00 AM - 12:00 PM" },
+              ].map((slot, index) => (
+                <div key={index} className="border border-green-500 rounded-md p-4">
+                  <h4 className="font-semibold text-gray-700">{slot.day}</h4>
+                  <p className="text-gray-600 mb-3">{slot.time}</p>
+                  <button
+                    onClick={() => {
+                      setSelectedSlot(slot)
+                      setIsModalOpen(true)
+                    }}
+                    className="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors text-sm font-medium"
+                  >
+                    Book This Slot
+                  </button>
+                </div>
+              ))}
+            </div>
+            <div className="mt-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Office Hours</h3>
+              <p className="text-gray-600">Monday - Friday: 9:00 AM to 5:00 PM</p>
+              <p className="text-gray-600">Saturday: 10:00 AM to 2:00 PM</p>
+              <p className="text-gray-600">Sunday: Closed</p>
+            </div>
+            <div className="mt-8">
+              <h3 className="text-2xl font-semibold text-gray-800 mb-4">Emergency Contact</h3>
+              <p className="text-gray-600">
+                In case of emergency, please call: <span className="font-medium">(123) 456-7890</span>
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Patient Resources Section */}
-      <section id="patient-resources" className="py-10">
+      <section id="patient-resources" className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Patient Resources</h2>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">Patient Resources</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Everything you need for a smooth and informed healthcare experience
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                title: "Insurance & Payments",
-                description: "We accept cash, credit cards, bank transfers, and mobile payments"
+                title: "Insurance Information",
+                description: "Learn about accepted insurance plans and payment options for your convenience",
               },
               {
-                title: "Accessibility",
-                description: "Wheelchair accessible facility with air conditioning"
+                title: "Patient Forms",
+                description: "Download and complete forms before your visit to save time during your appointment",
               },
               {
-                title: "Home Services",
-                description: "Available for patients who require home visits"
-              }
+                title: "FAQs",
+                description: "Find answers to common questions about our practice and healthcare services",
+              },
+              {
+                title: "Prescription Refills",
+                description: "Request prescription refills online and track your medication history easily",
+              },
+              {
+                title: "Lab Results",
+                description: "Access your lab results securely online as soon as they become available",
+              },
+              {
+                title: "Health Portal",
+                description: "Manage your health information and communicate with our medical team",
+              },
             ].map((resource, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">{resource.title}</h3>
-                <p className="text-gray-600">{resource.description}</p>
+              <div
+                key={index}
+                className="p-8 rounded-2xl shadow-lg hover:shadow-xl hover:border-2 hover:border-green-500 transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <h3 className="text-2xl font-bold text-gray-900 mb-4">{resource.title}</h3>
+                <p className="text-gray-600 leading-relaxed">{resource.description}</p>
               </div>
             ))}
           </div>
@@ -171,27 +228,49 @@ export default function Home() {
       </section>
 
       {/* Blog Section */}
-      <section id="blog" className="py-10">
+      <section id="blog" className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Latest from Our Blog</h2>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">Latest from Our Blog</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Stay informed with the latest health insights and medical updates
+            </p>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
               {
-                title: "Understanding Joint Replacement",
-                excerpt: "Learn about the latest advancements in joint replacement surgery"
+                title: "Understanding Preventive Care",
+                excerpt: "Learn about the importance of regular check-ups and preventive measures for long-term health",
               },
               {
-                title: "Trauma Care Excellence",
-                excerpt: "Expert insights into managing complex orthopedic trauma cases"
+                title: "Healthy Living Tips",
+                excerpt: "Expert advice on maintaining a healthy lifestyle with practical daily habits",
               },
               {
-                title: "Research & Innovation",
-                excerpt: "Stay informed about our latest research in orthopedic surgery"
-              }
+                title: "Medical News Updates",
+                excerpt: "Stay informed about the latest developments in healthcare and medical technology",
+              },
+              {
+                title: "Mental Health Awareness",
+                excerpt: "Understanding the importance of mental health and when to seek professional help",
+              },
+              {
+                title: "Nutrition and Wellness",
+                excerpt: "Essential nutrition tips for maintaining optimal health and energy levels",
+              },
+              {
+                title: "Exercise and Physical Health",
+                excerpt: "Safe and effective exercise routines for different age groups and fitness levels",
+              },
             ].map((post, index) => (
-              <div key={index} className="bg-white p-6 rounded-lg shadow-md">
-                <h3 className="text-xl font-semibold text-gray-900 mb-4">{post.title}</h3>
-                <p className="text-gray-600">{post.excerpt}</p>
+              <div
+                key={index}
+                className="p-8 rounded-2xl shadow-lg hover:shadow-xl hover:border-2 hover:border-green-500 transition-all duration-300 transform hover:-translate-y-1"
+              >
+                <h3 className="text-2xl font-bold text-gray-900 mb-4 hover:text-green-700 transition-colors">
+                  {post.title}
+                </h3>
+                <p className="text-gray-600 leading-relaxed">{post.excerpt}</p>
               </div>
             ))}
           </div>
@@ -199,62 +278,102 @@ export default function Home() {
       </section>
 
       {/* Contact Section */}
-      <section id="contact" className="py-10">
+      <section id="contact" className="py-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-12 text-center">Contact Us</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">Get in Touch</h3>
-              <div className="space-y-4">
-                <p className="text-gray-600">
-                  <strong>Hospital:</strong><br />
-                  Bethezata Hospital<br />
-                  Addis Ababa, Ethiopia
-                </p>
-                <p className="text-gray-600">
-                  <strong>Hours:</strong><br />
-                  Monday: 9:00 AM - 5:00 PM<br />
-                  Wednesday: 9:00 AM - 5:00 PM<br />
-                  Friday: 9:00 AM - 5:00 PM
-                </p>
-                <p className="text-gray-600">
-                  <strong>WhatsApp:</strong><br />
-                  Available for quick responses
-                </p>
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6">Contact Us</h2>
+            <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+              Get in touch with our friendly team for any questions or concerns
+            </p>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+            <div className="p-10 rounded-3xl shadow-xl hover:border-2 hover:border-green-500 transition-all duration-300">
+              <h3 className="text-2xl font-bold text-gray-900 mb-8">Get in Touch</h3>
+              <div className="space-y-6">
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                      />
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <p className="text-gray-600 leading-relaxed">
+                      <strong className="text-gray-900">Address:</strong>
+                      <br />
+                      123 Medical Center Drive
+                      <br />
+                      Suite 100
+                      <br />
+                      City, State 12345
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Phone className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-gray-600">
+                      <strong className="text-gray-900">Phone:</strong>
+                      <br />
+                      (123) 456-7890
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-start space-x-4">
+                  <div className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <Mail className="w-6 h-6 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-gray-600">
+                      <strong className="text-gray-900">Email:</strong>
+                      <br />
+                      contact@drteshome.com
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
-            <div>
+            <div className="p-10 rounded-3xl shadow-xl hover:border-2 hover:border-green-500 transition-all duration-300">
               <form className="space-y-6">
                 <div>
-                  <label htmlFor="contact-name" className="block text-sm font-medium text-gray-700 mb-1">Name</label>
                   <input
                     type="text"
                     id="contact-name"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-[#006837] focus:border-[#006837] text-gray-900 placeholder-gray-400"
-                    placeholder="Your name"
+                    placeholder="Your Name"
+                    className="w-full px-4 py-4 rounded-xl border-2 border-green-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 transition-all duration-300 text-lg placeholder-gray-500"
                   />
                 </div>
                 <div>
-                  <label htmlFor="contact-email" className="block text-sm font-medium text-gray-700 mb-1">Email</label>
                   <input
                     type="email"
                     id="contact-email"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#006837] focus:border-[#006837] text-gray-900 placeholder-gray-400"
-                    placeholder="your.email@example.com"
+                    placeholder="Your Email"
+                    className="w-full px-4 py-4 rounded-xl border-2 border-green-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 transition-all duration-300 text-lg placeholder-gray-500"
                   />
                 </div>
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
                   <textarea
                     id="message"
                     rows={4}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-sm focus:outline-none focus:ring-1 focus:ring-[#006837] focus:border-[#006837] text-gray-900 placeholder-gray-400"
-                    placeholder="Your message"
+                    placeholder="Your Message"
+                    className="w-full px-4 py-4 rounded-xl border-2 border-green-200 focus:border-green-500 focus:ring-4 focus:ring-green-100 transition-all duration-300 text-lg placeholder-gray-500 resize-none"
                   ></textarea>
                 </div>
                 <button
                   type="submit"
-                  className="w-full bg-[#006837] text-white px-4 py-2 rounded-md hover:bg-[#005129] transition-colors focus:outline-none focus:ring-2 focus:ring-[#006837] focus:ring-offset-2"
+                  className="w-full bg-green-600 text-white px-6 py-4 rounded-xl hover:bg-green-700 transition-all duration-300 transform hover:scale-[1.02] shadow-lg hover:shadow-xl text-lg font-semibold"
                 >
                   Send Message
                 </button>
@@ -264,7 +383,15 @@ export default function Home() {
         </div>
       </section>
 
-      <AppointmentModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
-      </main>
-  );
+      {/* Appointment Modal */}
+      {isModalOpen && (
+        <AppointmentModal 
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          selectedSlot={selectedSlot}
+          setSelectedSlot={setSelectedSlot}
+        />
+      )}
+    </main>
+  )
 }
