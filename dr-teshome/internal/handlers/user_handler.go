@@ -71,4 +71,4 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 			"role":      user.Role,
 		},
 	})
-} 
+}

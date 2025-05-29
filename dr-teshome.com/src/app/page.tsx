@@ -68,7 +68,13 @@ export default function LandingPage() {
             </div>
             <div className="relative">
               <div className="relative h-96 lg:h-[500px] rounded-2xl overflow-hidden shadow-2xl">
-                <Image src="/images/dr-tesh.jpeg" alt="Dr. Teshome" fill className="object-cover" />
+                <Image 
+                  src="/images/dr-tesh.jpeg" 
+                  alt="Dr. Teshome" 
+                  fill 
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover" 
+                />
               </div>
             </div>
           </div>

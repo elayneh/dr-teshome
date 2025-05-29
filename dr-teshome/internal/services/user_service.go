@@ -95,4 +95,4 @@ func (s *UserService) Login(email, password string) (*models.User, error) {
 	}
 
 	return user, nil
-} 
+}

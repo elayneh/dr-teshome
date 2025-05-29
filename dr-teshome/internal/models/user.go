@@ -28,4 +28,4 @@ type UserRegistration struct {
 	PhoneNumber string    `json:"phoneNumber"`
 	DateOfBirth time.Time `json:"dateOfBirth"`
 	Address     string    `json:"address"`
-} 
+}

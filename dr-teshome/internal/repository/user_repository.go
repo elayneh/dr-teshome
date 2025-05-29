@@ -2,6 +2,7 @@ package repository
 
 import (
 	"dr-teshome/internal/models"
+
 	"gorm.io/gorm"
 )
 
@@ -32,4 +33,4 @@ func (r *UserRepository) Update(user *models.User) error {
 
 func (r *UserRepository) Delete(id uint) error {
 	return r.db.Delete(&models.User{}, id).Error
-} 
+}

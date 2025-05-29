@@ -1,4 +1,5 @@
-import { Dispatch, SetStateAction } from "react"
+import { Dispatch, SetStateAction, useState } from "react"
+import { createAppointment } from "../services/appointmentService"
 
 interface AppointmentModalProps {
   isOpen: boolean
@@ -9,6 +10,31 @@ interface AppointmentModalProps {
 
 export default function AppointmentModal({ isOpen, onClose, selectedSlot, setSelectedSlot }: AppointmentModalProps) {
   if (!isOpen) return null
+
+  const [appointmentData, setAppointmentData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phoneNumber: "",
+    date: selectedSlot?.day + " " + selectedSlot?.time,
+    reason: "",
+  })
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const handleSubmitBooking = async () => {
+    try {
+      setIsSubmitting(true)
+      setError(null)
+      await createAppointment(appointmentData)
+      onClose()
+    } catch (err) {
+      setError('Failed to book appointment. Please try again.')
+      console.error('Error booking appointment:', err)
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm bg-black/30 flex items-center justify-center z-50 p-4">
@@ -41,14 +67,27 @@ export default function AppointmentModal({ isOpen, onClose, selectedSlot, setSel
           </div>
           {/* Right: Form */}
           <div className="bg-white rounded-r-2xl p-8">
-            <form className="space-y-4">
+            <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSubmitBooking(); }}>
               <div>
-                <label htmlFor="modal-name" className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                <label htmlFor="modal-first-name" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
                 <input
                   type="text"
-                  id="modal-name"
+                  id="modal-first-name"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
-                  placeholder="Enter your full name"
+                  placeholder="Enter first name"
+                  value={appointmentData.firstName}
+                  onChange={(e) => setAppointmentData({ ...appointmentData, firstName: e.target.value })}
+                />
+              </div>
+              <div>
+                <label htmlFor="modal-last-name" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                <input
+                  type="text"
+                  id="modal-last-name"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
+                  placeholder="Enter last name"
+                  value={appointmentData.lastName}
+                  onChange={(e) => setAppointmentData({ ...appointmentData, lastName: e.target.value })}
                 />
               </div>
               <div>
@@ -58,6 +97,8 @@ export default function AppointmentModal({ isOpen, onClose, selectedSlot, setSel
                   id="modal-email"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
                   placeholder="Enter your email"
+                  value={appointmentData.email}
+                  onChange={(e) => setAppointmentData({ ...appointmentData, email: e.target.value })}
                 />
               </div>
               <div>
@@ -67,6 +108,8 @@ export default function AppointmentModal({ isOpen, onClose, selectedSlot, setSel
                   id="modal-phone"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
                   placeholder="Enter your phone number"
+                  value={appointmentData.phoneNumber}
+                  onChange={(e) => setAppointmentData({ ...appointmentData, phoneNumber: e.target.value })}
                 />
               </div>
               <div>
@@ -76,21 +119,30 @@ export default function AppointmentModal({ isOpen, onClose, selectedSlot, setSel
                   rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none text-gray-900 bg-white"
                   placeholder="Brief description of your visit reason"
+                  value={appointmentData.reason}
+                  onChange={(e) => setAppointmentData({ ...appointmentData, reason: e.target.value })}
                 ></textarea>
               </div>
+              {error && (
+                <div className="text-red-600 text-sm mt-2">
+                  {error}
+                </div>
+              )}
               <div className="flex space-x-3 pt-4">
                 <button
                   type="button"
                   onClick={onClose}
                   className="flex-1 px-4 py-2 border border-gray-300 text-gray-700 rounded-md hover:bg-gray-50 transition-colors"
+                  disabled={isSubmitting}
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={isSubmitting}
                 >
-                  Confirm Booking
+                  {isSubmitting ? 'Booking...' : 'Confirm Booking'}
                 </button>
               </div>
             </form>

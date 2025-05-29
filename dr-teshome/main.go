@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 )
 
 func corsMiddleware(next http.Handler) http.Handler {
@@ -39,20 +38,21 @@ func main() {
 	}
 
 	// Auto migrate the schema
-	err = db.AutoMigrate(&models.User{})
+	err = db.AutoMigrate(&models.User{}, &models.Appointment{})
 	if err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
 
 	// Initialize repositories
 	userRepo := repository.NewUserRepository(db)
-
+	appointmentRepo := repository.NewAppointmentRepository(db)
 	// Initialize services
 	userService := services.NewUserService(userRepo)
+	appointmentService := services.NewAppointmentService(appointmentRepo)
 
 	// Initialize handlers
 	userHandler := handlers.NewUserHandler(userService)
-
+	appointmentHandler := handlers.NewAppointmentHandler(appointmentService)
 	// Create router
 	mux := http.NewServeMux()
 
@@ -60,14 +60,15 @@ func main() {
 	mux.HandleFunc("/api/auth/register", userHandler.Register)
 	mux.HandleFunc("/api/auth/login", userHandler.Login)
 
+	// Appointment routes
+	mux.HandleFunc("/api/create-appointment", appointmentHandler.CreateAppointment)
+	mux.HandleFunc("/api/get-appointments", appointmentHandler.GetAppointments)
+
 	// Health check endpoint
 	mux.HandleFunc("/api/health", handlers.HealthCheck)
 
 	// Start the server
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080"
-	}
+	port := cfg.ServerPort
 	fmt.Printf("Server starting on port %s...\n", port)
 	if err := http.ListenAndServe(":"+port, corsMiddleware(mux)); err != nil {
 		log.Fatalf("Failed to start server: %v", err)

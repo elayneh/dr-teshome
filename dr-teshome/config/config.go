@@ -30,7 +30,7 @@ func LoadConfig() *Config {
 		DBPassword: getEnv("DB_PASSWORD", "postgres"),
 		DBName:     getEnv("DB_NAME", "drteshome"),
 		ServerPort: getEnv("SERVER_PORT", "8080"),
-		JWTSecret:  getEnv("JWT_SECRET", "your-secret-key-here"),
+		JWTSecret:  getEnv("JWT_SECRET", "secret-key"),
 	}
 }
 
