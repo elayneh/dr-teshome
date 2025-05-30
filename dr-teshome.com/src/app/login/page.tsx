@@ -56,7 +56,11 @@ export default function LoginPage() {
       localStorage.setItem("isLoggedIn", "true")
       localStorage.setItem("userName", data.userName || "User")
 
-      router.push("/")
+      if (data.user.role === "doctor") {
+        router.push("/doctor")
+      } else {
+        router.push("/")
+      }
     } catch (error) {
       console.error("Login error:", error)
       setError("An error occurred during login. Please try again.")

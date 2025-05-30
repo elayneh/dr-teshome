@@ -29,3 +29,12 @@ type UserRegistration struct {
 	DateOfBirth time.Time `json:"dateOfBirth"`
 	Address     string    `json:"address"`
 }
+
+type Doctor struct {
+	Email       string    `json:"email"`
+	Password    string    `json:"password"`
+	FirstName   string    `json:"firstName"`
+	LastName    string    `json:"lastName"`
+	PhoneNumber string    `json:"phoneNumber"`
+	Specialty   string    `json:"specialty"`
+}	

@@ -38,7 +38,7 @@ func main() {
 	}
 
 	// Auto migrate the schema
-	err = db.AutoMigrate(&models.User{}, &models.Appointment{})
+	err = db.AutoMigrate(&models.User{}, &models.Appointment{}, &models.Blog{})
 	if err != nil {
 		log.Fatalf("Failed to migrate database: %v", err)
 	}
@@ -46,13 +46,18 @@ func main() {
 	// Initialize repositories
 	userRepo := repository.NewUserRepository(db)
 	appointmentRepo := repository.NewAppointmentRepository(db)
+	blogRepo := repository.NewBlogRepository(db)
+
 	// Initialize services
 	userService := services.NewUserService(userRepo)
 	appointmentService := services.NewAppointmentService(appointmentRepo)
+	blogService := services.NewBlogService(blogRepo)
 
 	// Initialize handlers
 	userHandler := handlers.NewUserHandler(userService)
 	appointmentHandler := handlers.NewAppointmentHandler(appointmentService)
+	blogHandler := handlers.NewBlogHandler(blogService)
+
 	// Create router
 	mux := http.NewServeMux()
 
@@ -63,6 +68,11 @@ func main() {
 	// Appointment routes
 	mux.HandleFunc("/api/create-appointment", appointmentHandler.CreateAppointment)
 	mux.HandleFunc("/api/get-appointments", appointmentHandler.GetAppointments)
+
+	// Blog routes
+	mux.HandleFunc("/api/create-blog", blogHandler.CreateBlog)
+	mux.HandleFunc("/api/get-blogs", blogHandler.GetBlogs)
+	mux.HandleFunc("/api/get-blog-by-id", blogHandler.GetBlogByID)
 
 	// Health check endpoint
 	mux.HandleFunc("/api/health", handlers.HealthCheck)
