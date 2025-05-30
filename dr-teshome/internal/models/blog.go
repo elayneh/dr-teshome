@@ -2,12 +2,11 @@ package models
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type Blog struct {
-	Blog_id uuid.UUID `json:"blog_id" gorm:"type:uuid;primary_key;default:uuid_generate_v4()"`
+	Blog_id uint `json:"blog_id" gorm:"primary_key;autoIncrement:true"`
+	Blog Staff `gorm:"foreignKey:Blog_id"`
 	Title string `json:"title"`
 	Content string `json:"content"`
 	Author string `json:"author"`

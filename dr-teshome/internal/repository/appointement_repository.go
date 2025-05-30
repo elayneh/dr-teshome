@@ -40,3 +40,10 @@ func (r *AppointmentRepository) GetAppointments() ([]models.Appointment, error) 
 	err := r.db.Find(&appointments).Error
 	return appointments, err
 }
+
+func (r *AppointmentRepository) GetUserAppointments(userID uint) ([]models.Appointment, error) {
+	var appointments []models.Appointment
+	err := r.db.Where("patient_id = ?", userID).Find(&appointments).Error
+	return appointments, err
+}
+

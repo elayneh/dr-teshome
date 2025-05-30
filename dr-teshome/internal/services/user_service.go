@@ -36,6 +36,50 @@ func (s *UserService) validateRegistration(regData *models.UserRegistration) err
 	}
 	return nil
 }
+func (s *UserService) validateStaffRegistration(regData *models.StaffRegistration) error {
+	if strings.TrimSpace(regData.Email) == "" {
+		return errors.New("email is required")
+	}
+	if !strings.Contains(regData.Email, "@") {
+		return errors.New("invalid email format")
+	}
+	if len(regData.Password) < 6 {
+		return errors.New("password must be at least 6 characters long")
+	}
+	if strings.TrimSpace(regData.FirstName) == "" {
+		return errors.New("first name is required")
+	}
+	if strings.TrimSpace(regData.LastName) == "" {
+		return errors.New("last name is required")
+	}
+	return nil
+}
+
+func (s * UserService) RegisterStaff(regData *models.StaffRegistration) error {
+	if err := s.validateStaffRegistration(regData); err != nil {
+		return err
+	}
+	
+		// Check if user already exists
+		existingUser, _ := s.userRepo.FindStaffByEmail(regData.Email)
+		if existingUser != nil {
+			return errors.New("user with this email already exists")
+		}
+	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(regData.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+
+	staff := &models.StaffRegistration{
+		Email:       regData.Email,
+		Password:    string(hashedPassword),
+		FirstName:   regData.FirstName,
+		LastName:    regData.LastName,
+		PhoneNumber: regData.PhoneNumber,
+		Role:        regData.Role,
+	}
+	return s.userRepo.CreateStaff(staff)
+}
 
 func (s *UserService) Register(regData *models.UserRegistration) error {
 	// Validate registration data
@@ -95,4 +139,26 @@ func (s *UserService) Login(email, password string) (*models.User, error) {
 	}
 
 	return user, nil
+}
+
+func (s *UserService) LoginStaff(email, password string) (*models.Staff, error) {
+	if strings.TrimSpace(email) == "" || strings.TrimSpace(password) == "" {
+		return nil, errors.New("email and password are required")
+	}
+
+	staff, err := s.userRepo.FindStaffByEmail(email)
+	if err != nil {
+		return nil, errors.New("invalid credentials")
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(staff.Password), []byte(password))
+	if err != nil {
+		return nil, errors.New("invalid credentials")
+	}
+
+	staff.LastLoginAt = time.Now()
+	err = s.userRepo.UpdateStaff(staff)
+	if err != nil {
+		return nil, err
+	}
+	return staff, nil
 }

@@ -20,3 +20,7 @@ func (s *AppointmentService) CreateAppointment(appointment *models.Appointment) 
 func (s *AppointmentService) GetAppointments() ([]models.Appointment, error) {
 	return s.appointmentRepo.GetAppointments()
 }
+
+func (s *AppointmentService) GetUserAppointments(userID uint) ([]models.Appointment, error) {
+	return s.appointmentRepo.GetUserAppointments(userID)
+}
