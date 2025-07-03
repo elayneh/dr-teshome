@@ -157,9 +157,12 @@ export default function LandingPage() {
                       setSelectedSlot(slot)
                       setIsModalOpen(true)
                     }}
-                    className="w-full bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 transition-colors text-sm font-medium"
+                    className="group w-full bg-green-600 text-white px-4 py-3 rounded-full hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm font-semibold"
                   >
-                    Book This Slot
+                    <span className="flex items-center justify-center">
+                      Book This Slot
+                      <Calendar className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
                   </button>
                 </div>
               ))}

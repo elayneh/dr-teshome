@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useState } from "react"
 import { createAppointment } from "../services/appointmentService"
+import { Calendar } from "lucide-react"
 
 interface AppointmentModalProps {
   isOpen: boolean
@@ -68,40 +69,40 @@ export default function AppointmentModal({ isOpen, onClose, selectedSlot, setSel
           {/* Right: Form */}
           <div className="bg-white rounded-r-2xl p-8">
             <form className="space-y-4" onSubmit={(e) => { e.preventDefault(); handleSubmitBooking(); }}>
-              <div>
+          <div>
                 <label htmlFor="modal-first-name" className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
-                <input
-                  type="text"
+            <input
+              type="text"
                   id="modal-first-name"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
                   placeholder="Enter first name"
                   value={appointmentData.firstName}
                   onChange={(e) => setAppointmentData({ ...appointmentData, firstName: e.target.value })}
-                />
-              </div>
-              <div>
+            />
+          </div>
+          <div>
                 <label htmlFor="modal-last-name" className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
-                <input
+            <input
                   type="text"
                   id="modal-last-name"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
                   placeholder="Enter last name"
                   value={appointmentData.lastName}
                   onChange={(e) => setAppointmentData({ ...appointmentData, lastName: e.target.value })}
-                />
-              </div>
-              <div>
+            />
+          </div>
+          <div>
                 <label htmlFor="modal-email" className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-                <input
+            <input
                   type="email"
                   id="modal-email"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 text-gray-900 bg-white"
                   placeholder="Enter your email"
                   value={appointmentData.email}
                   onChange={(e) => setAppointmentData({ ...appointmentData, email: e.target.value })}
-                />
-              </div>
-              <div>
+            />
+          </div>
+          <div>
                 <label htmlFor="modal-phone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
                 <input
                   type="tel"
@@ -111,18 +112,18 @@ export default function AppointmentModal({ isOpen, onClose, selectedSlot, setSel
                   value={appointmentData.phoneNumber}
                   onChange={(e) => setAppointmentData({ ...appointmentData, phoneNumber: e.target.value })}
                 />
-              </div>
-              <div>
+          </div>
+          <div>
                 <label htmlFor="modal-reason" className="block text-sm font-medium text-gray-700 mb-1">Reason for Visit</label>
-                <textarea
+            <textarea
                   id="modal-reason"
-                  rows={3}
+              rows={3}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-green-500 resize-none text-gray-900 bg-white"
                   placeholder="Brief description of your visit reason"
                   value={appointmentData.reason}
                   onChange={(e) => setAppointmentData({ ...appointmentData, reason: e.target.value })}
-                ></textarea>
-              </div>
+            ></textarea>
+          </div>
               {error && (
                 <div className="text-red-600 text-sm mt-2">
                   {error}
@@ -137,15 +138,20 @@ export default function AppointmentModal({ isOpen, onClose, selectedSlot, setSel
                 >
                   Cancel
                 </button>
-                <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          <button
+            type="submit"
+                  className="group flex-1 px-6 py-3 bg-green-600 text-white rounded-full hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Booking...' : 'Confirm Booking'}
-                </button>
+                  {isSubmitting ? 'Booking...' : (
+                    <span className="flex items-center justify-center">
+                      Confirm Booking
+                      <Calendar className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  )}
+          </button>
               </div>
-            </form>
+        </form>
           </div>
         </div>
       </div>

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import Link from "next/link"
 import { usePathname } from 'next/navigation'
 import { useRouter } from 'next/navigation'
+import { Calendar } from "lucide-react"
 
 type Language = {
   code: string
@@ -30,15 +31,42 @@ export default function Header() {
 
   // Check if user is logged in from localStorage on component mount
   useEffect(() => {
-    const loggedInStatus = localStorage.getItem("isLoggedIn")
-    const storedUserName = localStorage.getItem("userName")
+    const checkLoginStatus = () => {
+      const loggedInStatus = localStorage.getItem("isLoggedIn")
+      const storedUserName = localStorage.getItem("userName")
 
-    if (loggedInStatus === "true") {
-      setIsLoggedIn(true)
+      if (loggedInStatus === "true") {
+        setIsLoggedIn(true)
+      } else {
+        setIsLoggedIn(false)
+      }
+
+      if (storedUserName) {
+        setUserName(storedUserName)
+      }
     }
 
-    if (storedUserName) {
-      setUserName(storedUserName)
+    // Check on mount
+    checkLoginStatus()
+
+    // Listen for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === "isLoggedIn" || e.key === "userName") {
+        checkLoginStatus()
+      }
+    }
+
+    // Listen for custom login event
+    const handleLoginEvent = () => {
+      checkLoginStatus()
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    window.addEventListener('loginStateChanged', handleLoginEvent)
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange)
+      window.removeEventListener('loginStateChanged', handleLoginEvent)
     }
   }, [])
 
@@ -277,11 +305,10 @@ export default function Header() {
             {/* Book appointment button */}
             <button
               onClick={() => router.push('/appointment')}
-              className={`bg-[#006837] hover:bg-[#005129] text-white font-bold rounded-md transition-all duration-300 ${
-                scrolled ? "py-1.5 px-3 text-sm" : "py-2 px-4 text-base"
-              }`}
+              className="group bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm font-semibold"
             >
               Book Here
+              <Calendar className="inline-block ml-2 w-3 h-3 group-hover:translate-x-1 transition-transform" />
             </button>
 
             {/* Authentication Links - Conditional rendering based on login state */}
@@ -485,9 +512,10 @@ export default function Header() {
 
           <button
             onClick={() => router.push('/appointment')}
-            className="block w-full px-3 py-2 bg-[#006837] hover:bg-[#005129] text-white font-bold rounded-md transition-colors duration-200"
+            className="group bg-green-600 text-white px-4 py-2 rounded-full hover:bg-green-700 transition-all duration-300 transform hover:scale-105 shadow-lg hover:shadow-xl text-sm font-semibold"
           >
             Book Here
+            <Calendar className="inline-block ml-2 w-3 h-3 group-hover:translate-x-1 transition-transform" />
           </button>
 
           {/* Mobile Authentication Links */}

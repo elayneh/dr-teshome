@@ -1,10 +1,11 @@
 "use client"
 
-import type React from "react"
-
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import Link from "next/link"
+import { supabase } from "./../../lib/supabaseClient"
+import Cookies from "js-cookie"
+
 
 export default function LoginPage() {
   const [email, setEmail] = useState("")
@@ -13,7 +14,6 @@ export default function LoginPage() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  // Check if already logged in
   useEffect(() => {
     const loggedInStatus = localStorage.getItem("isLoggedIn")
     if (loggedInStatus === "true") {
@@ -27,52 +27,62 @@ export default function LoginPage() {
     setError("")
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
+      // Step 1: Supabase auth login
+      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       })
 
-      if (!response.ok) {
-        const contentType = response.headers.get("content-type")
-        if (contentType && contentType.includes("application/json")) {
-          const errorData = await response.json()
-          setError(errorData.error || "Login failed")
-        } else {
-          const errorText = await response.text()
-          console.log("Non-JSON error response:", errorText)
-          setError("Login failed with an unexpected error")
-        }
+      if (authError || !authData.session?.user) {
+        setError(authError?.message || "Login failed")
         setIsLoading(false)
         return
       }
 
-      const data = await response.json()
-      localStorage.setItem("isLoggedIn", "true")
-      localStorage.setItem("userName", data.userName || "User")
+      const userId = authData.session.user.id
 
-      if (data.user.role === "doctor") {
-        router.push("/doctor")
+      // Step 2: Get user profile from public.users table
+      const { data: userProfile, error: profileError } = await supabase
+        .from("users")
+        .select("full_name, role")
+        .eq("id", userId)
+        .single()
+
+      if (profileError || !userProfile) {
+        setError("Logged in, but failed to load profile info.")
+        setIsLoading(false)
+        return
+      }
+
+      // Step 3: Store basic info
+      localStorage.setItem("isLoggedIn", "true")
+      localStorage.setItem("userName", userProfile.full_name || "User")
+      localStorage.setItem("role", userProfile.role)
+      Cookies.set("isLoggedIn", "true", { expires: 7 }) // Expires in 7 days
+      Cookies.set("userName", userProfile.full_name || "User", { expires: 7 })
+      Cookies.set("role", userProfile.role, { expires: 7 })
+
+      // Dispatch custom event to notify header component
+      window.dispatchEvent(new Event('loginStateChanged'))
+
+      // Step 4: Redirect
+      if (["doctor", "nurse"].includes(userProfile.role)) {
+        router.push("/staff")
+      } else if(userProfile.role === "admin") {
+        router.push("/admin-dashboard")
       } else {
         router.push("/")
       }
-    } catch (error) {
-      console.error("Login error:", error)
-      setError("An error occurred during login. Please try again.")
+    } catch (err: any) {
+      console.error("Login error:", err.message)
+      setError("An unexpected error occurred. Please try again.")
+    } finally {
       setIsLoading(false)
     }
   }
 
-  const handleSocialLogin = (provider: string) => {
-    // For demo purposes, just log in the user
-    localStorage.setItem("isLoggedIn", "true")
-    localStorage.setItem("userName", "John Smith")
-    router.push("/")
+  const handleSocialLogin = async (provider: 'google' | 'facebook') => {
+    setError("Social login not implemented yet. Please use email/password login.")
   }
 
   return (
@@ -159,7 +169,7 @@ export default function LoginPage() {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#004d40] focus:border-[#004d40] sm:text-sm"
+                    className="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#004d40] focus:border-[#004d40] sm:text-sm text-gray-900"
                   />
                 </div>
               </div>
@@ -184,7 +194,7 @@ export default function LoginPage() {
                     required
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#004d40] focus:border-[#004d40] sm:text-sm"
+                    className="appearance-none block w-full pl-10 px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-[#004d40] focus:border-[#004d40] sm:text-sm text-gray-900"
                   />
                 </div>
               </div>

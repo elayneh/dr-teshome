@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Toaster } from 'react-hot-toast';
+import { cookies } from 'next/headers';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -16,20 +17,38 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "dr-teshome orthopedic surgion",
-  description: "dr-teshome tena who is one of recommended orthopedic surgeons in ethiopia",
+  title: "dr-teshome orthopedic surgeon",
+  description: "Dr. Teshome Tena is one of the recommended orthopedic surgeons in Ethiopia",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const cookieStore = await cookies();
+  const roleCookie = cookieStore.get("role");
+  let isStaff = false;
+  if (roleCookie?.value) {
+    isStaff = ["doctor", "nurse", "admin"].includes(roleCookie.value);
+  }
+
+  // If it's a staff session, hide header/footer
+  if (isStaff) {
+    return (
+      <html lang="en">
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+          {children}
+          <Toaster position="bottom-right" />
+        </body>
+      </html>
+    );
+  }
+
+  // Regular layout
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Header />
         {children}
         <Footer />
