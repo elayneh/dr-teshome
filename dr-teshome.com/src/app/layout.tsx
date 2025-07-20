@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { Toaster } from 'react-hot-toast';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,9 +30,11 @@ export default async function RootLayout({
   const cookieStore = await cookies();
   const roleCookie = cookieStore.get("role");
   let isStaff = false;
+  
   if (roleCookie?.value) {
-    isStaff = ["doctor", "nurse", "admin"].includes(roleCookie.value);
+    isStaff = ["doctor", "nurse", "admin", "superadmin"].includes(roleCookie.value);
   }
+
 
   // If it's a staff session, hide header/footer
   if (isStaff) {
@@ -45,7 +48,7 @@ export default async function RootLayout({
     );
   }
 
-  // Regular layout
+  // Regular layout with header and footer
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>

@@ -29,13 +29,33 @@ export default function Header() {
   const pathname = usePathname()
   const router = useRouter()
 
-  // Check if user is logged in from localStorage on component mount
+  // Check if user is logged in from cookies and localStorage on component mount
   useEffect(() => {
     const checkLoginStatus = () => {
-      const loggedInStatus = localStorage.getItem("isLoggedIn")
-      const storedUserName = localStorage.getItem("userName")
+      // Helper function to get cookie value
+      const getCookie = (name: string) => {
+        const value = `; ${document.cookie}`
+        const parts = value.split(`; ${name}=`)
+        if (parts.length === 2) return parts.pop()?.split(';').shift()
+        return null
+      }
 
-      if (loggedInStatus === "true") {
+      // Check cookies first
+      const cookieUserName = getCookie("userName")
+      const cookieRole = getCookie("role")
+      const cookieIsLoggedIn = getCookie("isLoggedIn")
+
+      // Check localStorage as fallback
+      const localUserName = localStorage.getItem("userName")
+      const localRole = localStorage.getItem("role")
+      const localIsLoggedIn = localStorage.getItem("isLoggedIn")
+
+      // Use cookies if available, otherwise fall back to localStorage
+      const storedUserName = cookieUserName || localUserName
+      const storedRole = cookieRole || localRole
+      const isLoggedIn = cookieIsLoggedIn === "true" || localIsLoggedIn === "true" || storedRole
+    
+      if (isLoggedIn) {
         setIsLoggedIn(true)
       } else {
         setIsLoggedIn(false)
@@ -49,9 +69,9 @@ export default function Header() {
     // Check on mount
     checkLoginStatus()
 
-    // Listen for storage changes
+    // Listen for storage changes (for localStorage fallback)
     const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === "isLoggedIn" || e.key === "userName") {
+      if (e.key === "isLoggedIn" || e.key === "userName" || e.key === "role") {
         checkLoginStatus()
       }
     }
@@ -113,10 +133,30 @@ export default function Header() {
   }
 
   const handleLogout = () => {
-    setIsLoggedIn(false)
+    // Helper function to delete cookie
+    const deleteCookie = (name: string) => {
+      document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`
+    }
+
+    // Clear cookies
+    deleteCookie("isLoggedIn")
+    deleteCookie("userName")
+    deleteCookie("role")
+    
+    // Clear localStorage as well
     localStorage.removeItem("isLoggedIn")
     localStorage.removeItem("userName")
-    window.location.href = "/"
+    localStorage.removeItem("role")
+    
+    // Update state
+    setIsLoggedIn(false)
+    setUserName("Patient")
+    
+    // Dispatch custom event to notify other components
+    window.dispatchEvent(new Event('loginStateChanged'))
+    
+    // Use router instead of window.location for better state management
+    router.push("/")
   }
 
   // Close dropdowns when clicking outside

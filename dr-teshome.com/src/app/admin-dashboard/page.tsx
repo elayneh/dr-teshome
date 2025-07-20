@@ -10,13 +10,6 @@ import { DashboardOverview } from "@/src/components/staff/dashboard-overview/pag
 import { ResourcesManager } from "@/src/components/staff/resources-manager/page"
 import { BlogsManager } from "@/src/components/staff/blogs-manager/page"
 import { AppointmentsManager } from "@/src/components/staff/appointments-manager/page"
-import { SidebarFooter } from "@/src/components/ui/sidebar"
-import { LogOut } from "lucide-react"
-import { SidebarMenu } from "@/src/components/ui/sidebar"
-import { Settings } from "lucide-react"
-import { SidebarMenuButton, SidebarMenuItem } from "@/src/components/ui/sidebar"
-import { Button } from "@/src/components/ui/button"
-// import { ReferralAnalytics } from "@/src/components/staff/referral-analytics/page"
 
 export default function AdminDashboardPage() {
   const [activeSection, setActiveSection] = useState("overview")
@@ -24,15 +17,20 @@ export default function AdminDashboardPage() {
   const [userName, setUserName] = useState<string>("")
   const [isLoading, setIsLoading] = useState(true)
   const [sidebarExpanded, setSidebarExpanded] = useState(true)
+  const [error, setError] = useState<string>("")
   const router = useRouter()
 
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        setIsLoading(true)
+        setError("")
+
         // Check if user is logged in
         const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
         
         if (sessionError || !sessionData.session?.user) {
+          console.log("No valid session found")
           router.push("/login")
           return
         }
@@ -47,13 +45,18 @@ export default function AdminDashboardPage() {
           .single()
 
         if (profileError || !userProfile) {
+          console.log("User profile not found or error:", profileError)
           router.push("/login")
           return
         }
 
         // Check if user is admin
         if (userProfile.role !== "admin") {
-          router.push("/")
+          console.log("User is not admin, role:", userProfile.role)
+          setError("Access denied. Admin privileges required.")
+          setTimeout(() => {
+            router.push("/")
+          }, 2000)
           return
         }
 
@@ -62,7 +65,10 @@ export default function AdminDashboardPage() {
         setIsLoading(false)
       } catch (error) {
         console.error("Auth check error:", error)
-        router.push("/login")
+        setError("Authentication error. Please try again.")
+        setTimeout(() => {
+          router.push("/login")
+        }, 2000)
       }
     }
 
@@ -79,6 +85,8 @@ export default function AdminDashboardPage() {
         return <BlogsManager />
       case "appointments":
         return <AppointmentsManager />
+      case "staffs":
+        return <StaffsManager />
       // case "referrals":
       //   return <ReferralAnalytics />
       default:
@@ -92,6 +100,18 @@ export default function AdminDashboardPage() {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading admin dashboard...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-white text-black flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-red-600 text-xl mb-4">⚠️ Access Denied</div>
+          <p className="text-gray-600">{error}</p>
+          <p className="text-gray-500 mt-2">Redirecting...</p>
         </div>
       </div>
     )

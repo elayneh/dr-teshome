@@ -68,31 +68,40 @@ export default function RegisterPage() {
     setIsLoading(true)
 
     try {
+      console.log("Attempting to sign up user:", formData.email)
+      
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
       })
 
       if (authError) {
-        setSubmitError(authError.message)
+        console.error("Auth error:", authError)
+        setSubmitError(`Authentication error: ${authError.message}`)
         setIsLoading(false)
         return
       }
 
-            // Try getting userId from the immediate response
+      console.log("Auth successful, user data:", authData)
+
+      // Try getting userId from the immediate response
       let userId = authData.user?.id
           
       // If it's not there (can happen when email confirmation is enabled), try from the session
       if (!userId) {
+        console.log("No user ID in response, checking session...")
         const { data: sessionData, error: sessionError } = await supabase.auth.getSession()
         if (sessionError || !sessionData.session?.user.id) {
+          console.error("Session error:", sessionError)
           setSubmitError("Registration succeeded but failed to get user session.")
-      setIsLoading(false)
+          setIsLoading(false)
           return
         }
       
         userId = sessionData.session.user.id
       }
+
+      console.log("Creating user profile with ID:", userId)
 
       const { error: insertError } = await supabase.from("users").insert({
         id: userId,
@@ -105,11 +114,13 @@ export default function RegisterPage() {
       
 
       if (insertError) {
+        console.error("Profile creation error:", insertError)
         setSubmitError("User created but failed to save profile: " + insertError.message)
         setIsLoading(false)
         return
       }
 
+      console.log("Registration completed successfully")
       alert("Registration successful! Please log in.")
       
       // Dispatch custom event to notify header component
@@ -117,7 +128,8 @@ export default function RegisterPage() {
       
       router.push("/login")
     } catch (err: any) {
-      setSubmitError("Unexpected error: " + err.message)
+      console.error("Unexpected error during registration:", err)
+      setSubmitError(`Unexpected error: ${err.message || 'Network error - please check your connection'}`)
     } finally {
       setIsLoading(false)
     }

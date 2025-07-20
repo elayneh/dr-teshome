@@ -1,6 +1,6 @@
 "use client"
 
-import { Calendar, FileText, Home, Stethoscope, Settings, LogOut, TrendingUp, ChevronLeft, ChevronRight } from "lucide-react"
+import { Calendar, FileText, Home, Stethoscope, LogOut, TrendingUp, ChevronLeft, ChevronRight, User } from "lucide-react"
 import {
   Sidebar,
   SidebarContent,
@@ -53,6 +53,11 @@ const menuItems = [
     title: "Referral Analytics",
     icon: TrendingUp,
     id: "referrals",
+  },
+  {
+    title: "Staffs",
+    icon: User,
+    id: "staffs",
   },
 ]
 
