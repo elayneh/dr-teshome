@@ -9,6 +9,7 @@ import { DashboardHeader } from "@/src/components/staff/dashboard-header/page"
 import { DashboardOverview } from "@/src/components/staff/dashboard-overview/page"
 import { ResourcesManager } from "@/src/components/staff/resources-manager/page"
 import { BlogsManager } from "@/src/components/staff/blogs-manager/page"
+import StaffManager from "@/src/components/staff/staff-manager/page"
 import { AppointmentsManager } from "@/src/components/staff/appointments-manager/page"
 
 export default function AdminDashboardPage() {
@@ -86,7 +87,7 @@ export default function AdminDashboardPage() {
       case "appointments":
         return <AppointmentsManager />
       case "staffs":
-        return <StaffsManager />
+        return <StaffManager />
       // case "referrals":
       //   return <ReferralAnalytics />
       default:

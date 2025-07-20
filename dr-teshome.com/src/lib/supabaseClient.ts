@@ -11,9 +11,10 @@ if (!supabaseUrl || !supabaseAnonKey) {
   })
 }
 
+// Only create the real client if we have valid credentials
 export const supabase = createClient(
-  supabaseUrl!,
-  supabaseAnonKey!,
+  supabaseUrl || 'https://mock.supabase.co',
+  supabaseAnonKey || 'mock-key',
   {
     auth: {
       autoRefreshToken: true,
